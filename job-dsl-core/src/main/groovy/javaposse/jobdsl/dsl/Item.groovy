@@ -44,5 +44,9 @@ abstract class Item extends AbstractContext {
         throw new UnsupportedOperationException()
     }
 
+    protected Node loadJobTemplate() {
+        new XmlParser().parse(this.class.getResourceAsStream("${this.class.simpleName}-template.xml"))
+    }
+    
     abstract Node getNode()
 }

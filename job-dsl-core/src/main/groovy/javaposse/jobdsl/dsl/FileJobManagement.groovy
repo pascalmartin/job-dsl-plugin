@@ -56,4 +56,9 @@ class FileJobManagement extends MockJobManagement {
     String readFileInWorkspace(String filePath) {
         new File(root, filePath).text
     }
+    
+    @Override
+    void createOrUpdatePromotionConfig(String jobName, String promotionName, String xml) {
+    
+    }
 }

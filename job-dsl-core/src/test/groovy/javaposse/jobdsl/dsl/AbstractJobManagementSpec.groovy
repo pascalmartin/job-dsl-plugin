@@ -124,6 +124,10 @@ class AbstractJobManagementSpec extends Specification {
         String readFileInWorkspace(String filePath) throws IOException {
             throw new UnsupportedOperationException()
         }
+        
+        @Override
+        void createOrUpdatePromotionConfig(String jobName, String promotionName, String xml) {
+        }
 
         void testMethod() {
             logDeprecationWarning()

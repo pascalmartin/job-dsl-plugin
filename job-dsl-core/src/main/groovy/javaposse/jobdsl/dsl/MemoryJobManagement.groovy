@@ -80,4 +80,8 @@ class MemoryJobManagement extends MockJobManagement {
     private static String createConfigFileId(ConfigFile configFile) {
         DigestUtils.md5Hex(configFile.name)
     }
+    
+    @Override
+    void createOrUpdatePromotionConfig(String jobName, String promotionName, String xml) {
+    }
 }

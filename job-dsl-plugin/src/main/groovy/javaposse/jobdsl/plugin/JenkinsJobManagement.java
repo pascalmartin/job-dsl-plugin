@@ -43,7 +43,10 @@ import org.jenkinsci.plugins.vSphereCloud;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -349,6 +352,49 @@ public final class JenkinsJobManagement extends AbstractJobManagement {
         return PermissionsHelper.getPermissions(descriptorId);
     }
 
+    @Override
+    public void createOrUpdatePromotionConfig(String jobName, String promotionName, String xml) {
+
+        AbstractItem build = (AbstractItem) Jenkins.getInstance().getItemByFullName(jobName);
+        File jobDirectory = build.getConfigFile().getFile().getParentFile();
+
+        if(jobDirectory.isDirectory()) {
+            File promotions = new File(jobDirectory, "promotions");
+
+            if (!promotions.isDirectory()) {
+                promotions.mkdirs();
+            }
+
+            File promotion = new File(promotions, promotionName);
+            promotion.mkdir();
+
+            File promotionBuilds = new File(promotion, "builds");
+            promotionBuilds.mkdir();
+
+            File promotionConfig = new File(promotion, "config.xml");
+            File promotionBuildNumber = new File(promotion, "nextBuildNumber");
+
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(promotionConfig));
+                writer.write(xml);
+                writer.close();
+
+                writer = new BufferedWriter(new FileWriter(promotionBuildNumber));
+                writer.write("1");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            try {
+                build.updateByXml((Source) new StreamSource(new StringReader(build.getConfigFile().asString())));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
     private void markBuildAsUnstable(String message) {
         getOutputStream().println("Warning: " + message + " (" + getSourceDetails(getStackTrace()) + ")");
         build.setResult(UNSTABLE);

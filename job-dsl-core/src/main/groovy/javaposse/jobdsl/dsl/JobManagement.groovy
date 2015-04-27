@@ -202,4 +202,13 @@ interface JobManagement {
      * @since 1.31
      */
     Set<String> getPermissions(String authorizationMatrixPropertyClassName)
+
+    /**
+     * Creates or updates the config file for a job's promotion process (from the Promoted Builds Plugin)
+     *
+     * @param jobName name of the promotion's parent job
+     * @param promotionName name of the promotion
+     * @param xml config.xml for the promotion
+     */
+    void createOrUpdatePromotionConfig(String jobName, String promotionName, String xml)
 }
